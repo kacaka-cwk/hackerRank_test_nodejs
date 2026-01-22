@@ -1,17 +1,104 @@
-const express = require('express'); // Import the Express module
-const app = express(); // Initialize an Express application
-const PORT = 3000; // Define the port number
+const express = require("express");
+const axios = require("axios");
 
-let answer = 42;
+const app = express();
+const PORT = 3000;
 
-// Define a basic GET route
-app.get('/', (req, res) => {
-  res.send('Hello World! This is a simple API response.');
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// 🧠 Session-level in-memory store
+let posts = [];
+
+/**
+ * Load data from JSONPlaceholder when server starts
+ */
+async function loadPosts() {
+  try {
+    const res = await axios.get("https://jsonplaceholder.typicode.com/posts");
+    posts = res.data; // store in memory
+    console.log(`Loaded ${posts.length} posts into memory`);
+  } catch (err) {
+    console.error("Failed to load posts:", err.message);
+  }
+}
+
+loadPosts();
+
+
+// =======================
+// CRUD API
+// =======================
+
+// 🔹 GET all posts
+app.get("/posts", (req, res) => {
+  res.json(posts);
 });
 
-// Start the server and listen on the specified port
+// 🔹 GET single post by id
+app.get("/posts/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const post = posts.find(p => p.id === id);
+
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  res.json(post);
+});
+
+// 🔹 CREATE new post
+app.post("/posts", (req, res) => {
+  const { userId, title, body } = req.body;
+
+  const newPost = {
+    userId,
+    id: posts.length + 1,
+    title,
+    body,
+  };
+
+  posts.push(newPost);
+
+  res.status(201).json(newPost);
+});
+
+// 🔹 UPDATE a post
+app.put("/posts/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const post = posts.find(p => p.id === id);
+
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  post.title = req.body.title ?? post.title;
+  post.body = req.body.body ?? post.body;
+
+  res.json(post);
+});
+
+// 🔹 DELETE a post
+app.delete("/posts/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const index = posts.findIndex(p => p.id === id);
+  if (index === -1) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const deleted = posts.splice(index, 1);
+
+  res.json({ message: "Deleted successfully", deleted });
+});
+
+
+// =======================
+// Start server
+// =======================
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
+
 
 
