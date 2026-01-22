@@ -49,17 +49,24 @@ app.get("/posts/:id", (req, res) => {
 
 // 🔹 CREATE new post
 app.post("/posts", (req, res) => {
-  const { userId, title, body } = req.body;
+  const { userId, title, body, id } = req.body;
+
+  const currentIds = posts.map(p => p.id);
+  const greatestId = Math.max(...currentIds);
+  const isIdUnique = !currentIds.some(existingId => existingId === id);
+  const newPostId = isIdUnique && id > 0 ? id : greatestId + 1;
+
 
   const newPost = {
     userId,
-    id: posts.length + 1,
+    id: Number(newPostId),
     title,
     body,
   };
 
   posts.push(newPost);
-
+  posts.sort((a, b) => a.id - b.id);
+  
   res.status(201).json(newPost);
 });
 
