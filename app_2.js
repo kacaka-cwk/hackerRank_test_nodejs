@@ -56,7 +56,6 @@ app.post("/posts", (req, res) => {
   const isIdUnique = !currentIds.some(existingId => existingId === id);
   const newPostId = isIdUnique && id > 0 ? id : greatestId + 1;
 
-
   const newPost = {
     userId,
     id: Number(newPostId),
