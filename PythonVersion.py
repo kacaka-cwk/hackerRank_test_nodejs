@@ -17,3 +17,6 @@ def analyze_transactions(user_id):
     except Exception as e:
         print("API error:", e)
         return None
+
+
+
