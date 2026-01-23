@@ -29,6 +29,3 @@ async function analyzeUserPosts(userId: number) {
     avgWordCount: Math.round(avgWordCount)
   };
 }
-
-// Example usage
-analyzeUserPosts(1).then(console.log);

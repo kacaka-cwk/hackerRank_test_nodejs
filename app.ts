@@ -33,6 +33,15 @@ let posts: Post[] = [];
 async function loadPosts(): Promise<void> {
   try {
     const res = await axios.get<Post[]>("https://jsonplaceholder.typicode.com/posts");
+    // params getting
+    // const res = await axios.get<Post[]>("https://jsonplaceholder.typicode.com/posts",{
+    //   params: {
+    //     search: searchTerm,
+    //     page: pageNumber
+    //   }
+    // });
+
+    
     posts = res.data; // store in memory
     console.log(`Loaded ${posts.length} posts into memory`);
   } catch (err: any) {
@@ -67,6 +76,23 @@ app.get("/posts/:id", (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error", error: err });
   }
 });
+
+
+app.get("/posts-test", (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const post = posts.find((p) => p.id === id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
+  }
+});
+
 
 // 🔹 CREATE new post
 app.post("/posts", (req: Request, res: Response) => {
