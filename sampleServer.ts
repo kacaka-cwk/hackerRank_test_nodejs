@@ -17,8 +17,18 @@ app.get("/testAPI", (req: Request, res: Response) => {
   res.json(testResponse);
 });
 
+//---------Create Sample call for testing here------
+
+
+
+
 
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+
+
+
+
