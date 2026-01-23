@@ -15,9 +15,9 @@ async function getMovieTitles(substr) {
           `https://jsonmock.hackerrank.com/api/moviesdata/search/?Title=${substr}&page=${i}`,
         );
         const movieSubList = res.data.data;
-        movieSubList.map(movie => movieList.push(movie))
+        movieSubList.map((movie) => movieList.push(movie));
+      }
     }
-}
 
     const titleList = [];
     movieList.map((movie) => titleList.push(movie.Title));
@@ -25,13 +25,12 @@ async function getMovieTitles(substr) {
       return a.localeCompare(b);
     });
 
-    console.log(titleList)
+    console.log(titleList);
 
     return titleList;
   } catch (err) {
     console.log(err);
   }
 }
-
 
 getMovieTitles("Harry Potter");
