@@ -18,6 +18,12 @@ interface Post {
   body: string;
 }
 
+interface Transaction {
+  id: number;
+  amount: number;
+  type: "credit" | string;
+}
+
 // 🧠 Session-level in-memory store
 let posts: Post[] = [];
 
@@ -112,6 +118,56 @@ app.delete("/posts/:id", (req: Request, res: Response) => {
 
   res.json({ message: "Deleted successfully", deleted });
 });
+
+
+//------------------test API response for fetchDataTransformation.ts---------------------
+app.get("/transaction", (req: Request, res: Response) => {
+  try {
+    // -----------This method is cancelled as this is a get post, should not include body------------------------
+    // const { userId } = req.body as Partial<Post>;
+    // console.log(userId)
+    // -----------This method is cancelled as this is a get post, should not include body------------------------
+
+
+    const userId = Number(req.query.userId)
+    if(!userId){
+      res.status(400).json({ message: "No userId in params"})
+    }
+
+    console.log(userId)
+
+
+    const transactionList:Transaction[] = [
+      { id: 1, amount: 90, type: "credit" },
+      { id: 1, amount: 190, type: "credit" },
+      { id: 1, amount: 2220, type: "credit" },
+      { id: 2, amount: 10, type: "credit" },
+      { id: 3, amount: 80, type: "credit" },
+      { id: 4, amount: 1000, type: "credit" },
+      { id: 5, amount: 300, type: "credit" },
+    ]
+    
+
+    const result = transactionList.filter((t) => t.id == userId);
+    
+    // ----------If handling filter in here---------------
+    // const result = transactionList.filter((t) => {t.id == userId && t.amount > 100});
+    // ----------If handling filter in here---------------
+
+
+    console.log(result)
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
+  }
+});
+
+
+
+
+
+
+
 
 
 // =======================
