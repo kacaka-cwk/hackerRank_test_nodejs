@@ -48,14 +48,18 @@ app.get("/posts", (req: Request, res: Response) => {
 
 // 🔹 GET single post by id
 app.get("/posts/:id", (req: Request, res: Response) => {
-  const id = Number(req.params.id);
-  const post = posts.find(p => p.id === id);
+  try {
+    const id = Number(req.params.id);
+    const post = posts.find((p) => p.id === id);
 
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
   }
-
-  res.json(post);
 });
 
 // 🔹 CREATE new post
